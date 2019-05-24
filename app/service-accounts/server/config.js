@@ -9,7 +9,7 @@ Meteor.startup(() => {
 			type: 'boolean',
 			public: true,
         });
-        this.add('Service_account_limit', 5, {
+        this.add('Service_account_limit', 3, {
             type: 'int',
             public: true,
         });
