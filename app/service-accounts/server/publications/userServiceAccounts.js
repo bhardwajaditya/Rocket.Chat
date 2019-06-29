@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 
-import { Users } from '../../../models';
+import { Users, Subscriptions } from '../../../models';
 import { getDefaultUserFields } from '../../../utils/server/functions/getDefaultUserFields';
 
 Meteor.publish('userServiceAccounts', function() {
@@ -14,9 +14,19 @@ Meteor.publish('userServiceAccounts', function() {
 	const handle = Users.find({ 'u._id': this.userId, active: true }, {
 		fields: getDefaultUserFields(),
 	}).observeChanges({
-		added: (_id, record) => this.added('rocketchat_full_user', _id, record),
-		changed: (_id, record) => this.changed('rocketchat_full_user', _id, record),
-		removed: (_id, record) => this.removed('rocketchat_full_user', _id, record),
+		added: (id, fields) => {
+			const unread = Subscriptions.findUnreadByUserId(id);
+			fields.unread = unread;
+			this.added('rocketchat_user_service_account', id, fields);
+		},
+
+		changed: (id, fields) => {
+			this.changed('rocketchat_user_service_account', id, fields);
+		},
+
+		removed: (id) => {
+			this.removed('rocketchat_user_service_account', id);
+		},
 	});
 
 	this.ready();
