@@ -11,4 +11,3 @@ import './methods/getLinkedServiceAccounts';
 import './hooks/serviceAccountCallback';
 
 import './publications/fullServiceAccountData';
-import './publications/userServiceAccounts';

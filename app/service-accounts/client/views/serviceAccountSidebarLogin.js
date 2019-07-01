@@ -4,7 +4,6 @@ import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 
 import { handleError } from '../../../utils';
-import UserServiceAccount from '../../../models/client/models/UserServiceAccount';
 import './serviceAccountSidebarLogin.html';
 
 Template.serviceAccountSidebarLogin.helpers({
@@ -52,14 +51,14 @@ Template.serviceAccountSidebarLogin.events({
 	},
 });
 
-Template.serviceAccountSidebarLogin.onCreated(function () {
+Template.serviceAccountSidebarLogin.onCreated(function() {
 	const instance = this;
 	this.ready = new ReactiveVar(true);
 	this.users = new ReactiveVar([]);
 	this.loading = new ReactiveVar(true);
 	this.autorun(() => {
 		instance.loading.set(true);
-		Meteor.call('getLinkedServiceAccounts', function (err, serviceAccounts) {
+		Meteor.call('getLinkedServiceAccounts', function(err, serviceAccounts) {
 			if (err) {
 				this.loading.set(false);
 				return handleError(err);
@@ -68,5 +67,4 @@ Template.serviceAccountSidebarLogin.onCreated(function () {
 			instance.loading.set(false);
 		});
 	});
-	
 });
