@@ -2,7 +2,11 @@ import { Meteor } from 'meteor/meteor';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Template } from 'meteor/templating';
+<<<<<<< HEAD
 import toastr from 'toastr';
+=======
+import { Session } from 'meteor/session';
+>>>>>>> 6b7082c619a35570fac67937adfcfdc9263e93ec
 
 import { popover, AccountBox, menu, SideNav, modal } from '../../ui-utils';
 import { t, getUserPreference, handleError } from '../../utils';
@@ -75,6 +79,7 @@ const toolbarButtons = (user) => [{
 {
 	name: t('Service_account_login'),
 	icon: 'reload',
+	active: Session.get('saNotification'),
 	condition: () => !Meteor.user().u || (Meteor.user().u && localStorage.getItem('serviceAccountForceLogin')),
 	action: (e) => {
 		const options = [];
