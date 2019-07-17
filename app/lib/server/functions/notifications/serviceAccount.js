@@ -1,5 +1,4 @@
 import { metrics } from '../../../../metrics';
-import { settings } from '../../../../settings';
 import { Notifications } from '../../../../notifications';
 
 export function shouldNotifyServiceAccountOwner({

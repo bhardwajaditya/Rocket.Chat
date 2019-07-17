@@ -63,7 +63,7 @@ Template.serviceAccountSidebarLogin.onCreated(function() {
 	this.ready = new ReactiveVar(true);
 	this.users = new ReactiveVar([]);
 	this.loading = new ReactiveVar(true);
-	this.notifiedServiceAccount = new ReactiveVar("");
+	this.notifiedServiceAccount = new ReactiveVar('');
 	instance.notifiedServiceAccount.set(Session.get('saMessageReceiver'));
 	Session.delete('saMessageReceiver');
 	Session.delete('saNotification');
