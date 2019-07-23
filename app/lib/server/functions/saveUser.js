@@ -31,7 +31,7 @@ function validateUserData(userId, userData) {
 		});
 	}
 
-	if (!userData._id && !hasPermission(userId, 'create-user') && !userData.u) {
+	if (!userData._id && !hasPermission(userId, 'create-user')) {
 		throw new Meteor.Error('error-action-not-allowed', 'Adding user is not allowed', {
 			method: 'insertOrUpdateUser',
 			action: 'Adding_user',
