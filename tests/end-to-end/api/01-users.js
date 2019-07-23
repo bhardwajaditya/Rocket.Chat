@@ -1719,8 +1719,8 @@ describe('[Users]', function() {
 		});
 	});
 	describe('[Service Accounts]', () => {
+		const username = `serviceAccount_${ apiUsername }`;
 		it('should create a new service account', (done) => {
-			const username = `serviceAccount_${ apiUsername }`;
 			const description = 'Test Service Account';
 
 			request.post(api('serviceAccounts.create'))
@@ -1745,6 +1745,22 @@ describe('[Users]', function() {
 
 					targetUser._id = res.body.user._id;
 					targetUser.username = res.body.user.username;
+				})
+				.end(done);
+		});
+		it('should return an error when trying register new service account with an existing username', (done) => {
+			request.post(api('users.register'))
+				.send({
+					name: username,
+					username,
+					description,
+					password,
+				})
+				.expect('Content-Type', 'application/json')
+				.expect(400)
+				.expect((res) => {
+					expect(res.body).to.have.property('success', false);
+					expect(res.body).to.have.property('error').and.to.be.equal('Username is already in use');
 				})
 				.end(done);
 		});
