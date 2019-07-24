@@ -2,10 +2,13 @@ import { Meteor } from 'meteor/meteor';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
+import { FlowRouter } from 'meteor/kadira:flow-router';
 
 import { handleError } from '../../../utils';
+import { callbacks } from '../../../callbacks';
 import './serviceAccountSidebarLogin.html';
 import { popover } from '../../../ui-utils/client';
+import { Accounts } from 'meteor/accounts-base';
 
 Template.serviceAccountSidebarLogin.helpers({
 	loading() {
@@ -38,23 +41,24 @@ Template.serviceAccountSidebarLogin.events({
 		if (Meteor.user() && Meteor.user().u) {
 			username = Meteor.user().u.username;
 		}
-		Meteor.call('getLoginToken', username, function(error, token) {
+		Meteor.call('getLoginToken', username, function (error, token) {
 			if (error) {
 				return handleError(error);
 			}
-			popover.close();
-			Meteor.logout((err) => {
-				if (err) {
-					return handleError(err);
-				}
+			if (Meteor.user() && !Meteor.user().u) {
+				localStorage.setItem('serviceAccountForceLogin', true);
+			} else {
+				localStorage.removeItem('serviceAccountForceLogin');
+			}
+			const user = Meteor.user();
+			Meteor.logout(() => {
+				callbacks.run('afterLogoutCleanUp', user);
+				Meteor.call('logoutCleanUp', user, document.cookie);
+				FlowRouter.go('home');
+				popover.close();
 				Meteor.loginWithToken(token.token, (err) => {
 					if (err) {
 						return handleError(err);
-					}
-					if (Meteor.user() && Meteor.user().u) {
-						localStorage.setItem('serviceAccountForceLogin', true);
-					} else {
-						localStorage.removeItem('serviceAccountForceLogin');
 					}
 				});
 			});
