@@ -8,7 +8,6 @@ import { handleError } from '../../../utils';
 import { callbacks } from '../../../callbacks';
 import './serviceAccountSidebarLogin.html';
 import { popover } from '../../../ui-utils/client';
-import { Accounts } from 'meteor/accounts-base';
 
 Template.serviceAccountSidebarLogin.helpers({
 	loading() {
