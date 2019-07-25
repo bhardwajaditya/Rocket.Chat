@@ -41,7 +41,7 @@ Template.serviceAccountSidebarLogin.events({
 		if (Meteor.user() && Meteor.user().u) {
 			username = Meteor.user().u.username;
 		}
-		Meteor.call('getLoginToken', username, function (error, token) {
+		Meteor.call('getLoginToken', username, function(error, token) {
 			if (error) {
 				return handleError(error);
 			}
