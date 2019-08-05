@@ -29,6 +29,9 @@
 				{{#if accessTokensEnabled}}
 					{{> sidebarItem menuItem "Personal_Access_Tokens" "key" "account" "tokens" }}
 				{{/if}}
+				{{#if serviceAccountTransferEnabled}}
+					{{> sidebarItem menuItem "Service_accounts" "user" "account" "serviceAccounts" }}
+				{{/if}}
 			</ul>
 		</div>
 	</aside>

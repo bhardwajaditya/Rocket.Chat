@@ -12,3 +12,4 @@ import './accountPreferences';
 import './accountProfile';
 import './avatar/avatar';
 import './avatar/prompt';
+import './accountServiceAccounts';
