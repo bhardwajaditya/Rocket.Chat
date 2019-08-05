@@ -169,6 +169,7 @@ Template.accountPreferences.onCreated(function() {
 		data.mobileNotifications = $('#mobileNotifications').find('select').val();
 		data.unreadAlert = JSON.parse($('#unreadAlert').find('input:checked').val());
 		data.sidebarShowDiscussion = JSON.parse($('#sidebarShowDiscussion').find('input:checked').val());
+		data.sidebarShowServiceAccounts = JSON.parse($('#sidebarShowServiceAccounts').find('input:checked').val());
 		data.notificationsSoundVolume = parseInt($('#notificationsSoundVolume').val());
 		data.roomCounterSidebar = JSON.parse($('#roomCounterSidebar').find('input:checked').val());
 		data.highlights = _.compact(_.map($('[name=highlights]').val().split(/,|\n/), function(e) {
@@ -235,8 +236,9 @@ Template.accountPreferences.onCreated(function() {
 				if (results.requested) {
 					modal.open({
 						title: t('UserDataDownload_Requested'),
-						text: t('UserDataDownload_Requested_Text'),
+						text: t('UserDataDownload_Requested_Text', { pending_operations: results.pendingOperationsBeforeMyRequest }),
 						type: 'success',
+						html: true,
 					});
 
 					return true;
@@ -260,8 +262,9 @@ Template.accountPreferences.onCreated(function() {
 
 					modal.open({
 						title: t('UserDataDownload_Requested'),
-						text: t('UserDataDownload_RequestExisted_Text'),
+						text: t('UserDataDownload_RequestExisted_Text', { pending_operations: results.pendingOperationsBeforeMyRequest }),
 						type: 'success',
+						html: true,
 					});
 					return true;
 				}

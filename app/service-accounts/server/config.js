@@ -18,5 +18,18 @@ Meteor.startup(() => {
 			type: 'string',
 			public: true,
 		});
+		this.add('Service_accounts_approval_required', true, {
+			group: 'Service Accounts',
+			i18nLabel: 'Service_accounts_approval_required',
+			type: 'boolean',
+			public: true,
+		});
+	});
+	settings.add('Accounts_Default_User_Preferences_sidebarShowServiceAccounts', true, {
+		group: 'Accounts',
+		section: 'Accounts_Default_User_Preferences',
+		type: 'boolean',
+		public: true,
+		i18nLabel: 'Group_subscriptions',
 	});
 });

@@ -369,7 +369,7 @@ API.v1.addRoute('users.setStatus', { authRequired: true }, {
 		}
 
 		Meteor.runAsUser(user._id, () => {
-			if (this.bodyParams.message) {
+			if (this.bodyParams.message || this.bodyParams.message.length === 0) {
 				setStatusText(user._id, this.bodyParams.message);
 			}
 			if (this.bodyParams.status) {
@@ -522,6 +522,7 @@ API.v1.addRoute('users.setPreferences', { authRequired: true }, {
 				sidebarHideAvatar: Match.Optional(Boolean),
 				sidebarGroupByType: Match.Optional(Boolean),
 				sidebarShowDiscussion: Match.Optional(Boolean),
+				sidebarShowServiceAccounts: Match.Optional(Boolean),
 				muteFocusedConversations: Match.Optional(Boolean),
 			}),
 		});

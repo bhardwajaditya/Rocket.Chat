@@ -5,7 +5,7 @@ import _ from 'underscore';
 import { saveUser, checkUsernameAvailability } from '../../../lib/server/functions';
 import { Users } from '../../../models';
 import { settings } from '../../../settings';
-import { hasPermission, hasRole } from '../../../authorization/server';
+import { hasPermission } from '../../../authorization/server';
 
 Meteor.methods({
 	addServiceAccount(userData) {
@@ -31,7 +31,7 @@ Meteor.methods({
 		}
 
 		if (!checkUsernameAvailability(userData.username)) {
-			throw new Meteor.Error('error-field-unavailable', `<strong>${ _.escape(userData.username) }</strong> is already in use :(`, { method: 'addServiceAccount' });
+			throw new Meteor.Error('Username_already_exist', `${ _.escape(userData.username) } is already in use :(`, { method: 'addServiceAccount' });
 		}
 
 		const user = Meteor.user();
@@ -39,7 +39,7 @@ Meteor.methods({
 		const limit = settings.get('Service_account_limit');
 
 		if (serviceAccounts.count() >= limit) {
-			throw new Meteor.Error('error-not-allowed', 'Max service account limit reached', { method: 'addServiceAccount' });
+			throw new Meteor.Error('service-account-limit-reached', 'Max service account limit reached', { method: 'addServiceAccount' });
 		}
 
 		userData.u = {
@@ -49,7 +49,7 @@ Meteor.methods({
 		userData.joinDefaultChannels = false;
 		userData.roles = ['user'];
 
-		userData.active = hasRole(user._id, 'service-account-approved');
+		userData.active = !settings.get('Service_accounts_approval_required');
 		return saveUser(Meteor.userId(), userData);
 	},
 });

@@ -9,5 +9,8 @@ import './methods/getLoginToken';
 import './methods/getLinkedServiceAccounts';
 
 import './hooks/serviceAccountCallback';
+import './hooks/serviceAccountBroadcast';
 
 import './publications/fullServiceAccountData';
+
+import '../lib/serviceAccountRoomType';
