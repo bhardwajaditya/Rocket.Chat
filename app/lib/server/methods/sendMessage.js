@@ -89,6 +89,10 @@ Meteor.methods({
 				throw new Meteor.Error('error-not-allowed');
 			}
 
+			if (error.error === 'error-max-broadcast-limit') {
+				throw new Meteor.Error('error-max-broadcast-limit');
+			}
+
 			SystemLogger.error('Error sending message:', error);
 
 			Notifications.notifyUser(uid, 'message', {
