@@ -1,21 +1,21 @@
 import { Meteor } from 'meteor/meteor';
 
-import { Users, Subscriptions } from '../../../models';
+import { Subscriptions, ServiceAccountOwners } from '../../../models';
 import { getDefaultUserFields } from '../../../utils/server/functions/getDefaultUserFields';
 
 Meteor.methods({
 	getLinkedServiceAccounts() {
 		if (!Meteor.userId()) {
-			throw new Meteor.Error('error-invalid-user', 'Invalid user', { method: 'addServiceAccount' });
+			throw new Meteor.Error('error-invalid-user', 'Invalid user', { method: 'getLinkedServiceAccounts' });
 		}
 
 		const query = {
 			'u._id': Meteor.userId(),
 			active: true,
 		};
-		const result = Users.find(query, { fields: getDefaultUserFields() }).fetch();
+		const result = ServiceAccountOwners.findWithUserId(Meteor.userId()).fetch();
 		result.forEach((serviceAccount) => {
-			serviceAccount.unread = Subscriptions.findUnreadByUserId(serviceAccount._id).count();
+			serviceAccount.unread = Subscriptions.findUnreadByUserId(serviceAccount.sid).count();
 		});
 		return result;
 	},

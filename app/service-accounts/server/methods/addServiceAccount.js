@@ -3,7 +3,7 @@ import { check } from 'meteor/check';
 import _ from 'underscore';
 
 import { saveUser, checkUsernameAvailability } from '../../../lib/server/functions';
-import { Users } from '../../../models';
+import { Users, ServiceAccountOwners } from '../../../models';
 import { settings } from '../../../settings';
 import { hasPermission } from '../../../authorization/server';
 
@@ -35,7 +35,7 @@ Meteor.methods({
 		}
 
 		const user = Meteor.user();
-		const serviceAccounts = Users.findLinkedServiceAccounts(user._id, {});
+		const serviceAccounts = ServiceAccountOwners.findWithUserId(Meteor.userId());
 		const limit = settings.get('Service_account_limit');
 
 		if (serviceAccounts.count() >= limit) {
@@ -50,6 +50,9 @@ Meteor.methods({
 		userData.roles = ['user'];
 
 		userData.active = !settings.get('Service_accounts_approval_required');
-		return saveUser(Meteor.userId(), userData);
+		const id = saveUser(Meteor.userId(), userData);
+		const serviceAccount = Users.findOneByUsername(userData.username, {});
+		ServiceAccountOwners.createWithUserAndServiceAccount(user, serviceAccount);
+		return id;
 	},
 });

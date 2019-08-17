@@ -20,10 +20,10 @@ Template.serviceAccountSidebarLogin.helpers({
 		return Template.instance().users.get() && Template.instance().users.get().length > 0;
 	},
 	owner() {
-		return Meteor.user() && Meteor.user().u;
+		return Template.instance().owner.get();
 	},
 	showOwnerAccountLink() {
-		return localStorage.getItem('serviceAccountForceLogin') && Meteor.user() && !!Meteor.user().u;
+		return localStorage.getItem('owner') && Meteor.user() && Meteor.user().u;
 	},
 	receivedNewMessage(username) {
 		if (Template.instance().notifiedServiceAccount) {
@@ -38,30 +38,42 @@ Template.serviceAccountSidebarLogin.events({
 		e.preventDefault();
 		let { username } = this;
 		if (Meteor.user() && Meteor.user().u) {
-			username = Meteor.user().u.username;
-		}
-		Meteor.call('getLoginToken', username, function(error, token) {
-			if (error) {
-				return handleError(error);
-			}
-			if (Meteor.user() && !Meteor.user().u) {
-				localStorage.setItem('serviceAccountForceLogin', true);
-			} else {
-				localStorage.removeItem('serviceAccountForceLogin');
-			}
+			username = Template.instance().owner.get();
+			const token = localStorage.getItem('owner');
+			localStorage.removeItem('owner');
 			const user = Meteor.user();
 			Meteor.logout(() => {
 				callbacks.run('afterLogoutCleanUp', user);
 				Meteor.call('logoutCleanUp', user, document.cookie);
 				FlowRouter.go('home');
 				popover.close();
-				Meteor.loginWithToken(token.token, (err) => {
+				Meteor.loginWithToken(token, (err) => {
 					if (err) {
 						return handleError(err);
 					}
 				});
 			});
-		});
+		} else {
+			Meteor.call('getLoginToken', username, function(error, token) {
+				if (error) {
+					return handleError(error);
+				}
+				localStorage.setItem('owner', localStorage.getItem('Meteor.loginToken'));
+				const user = Meteor.user();
+				Meteor.logout(() => {
+					callbacks.run('afterLogoutCleanUp', user);
+					Meteor.call('logoutCleanUp', user, document.cookie);
+					FlowRouter.go('home');
+					popover.close();
+					Meteor.loginWithToken(token.token, (err) => {
+						if (err) {
+							return handleError(err);
+						}
+					});
+				});
+			});
+		}
+		
 	},
 });
 
@@ -70,19 +82,31 @@ Template.serviceAccountSidebarLogin.onCreated(function() {
 	this.ready = new ReactiveVar(true);
 	this.users = new ReactiveVar([]);
 	this.loading = new ReactiveVar(true);
+	this.owner = new ReactiveVar('');
 	this.notifiedServiceAccount = new ReactiveVar('');
 	instance.notifiedServiceAccount.set(Session.get('saMessageReceiver'));
 	Session.delete('saMessageReceiver');
 	Session.delete('saNotification');
 	this.autorun(() => {
 		instance.loading.set(true);
-		Meteor.call('getLinkedServiceAccounts', function(err, serviceAccounts) {
-			if (err) {
-				this.loading.set(false);
-				return handleError(err);
-			}
-			instance.users.set(serviceAccounts);
-			instance.loading.set(false);
-		});
+		if (localStorage.getItem('owner')) {
+			Meteor.call('getUsernameByLoginToken', localStorage.getItem('owner'), function(err, username) {
+				if (err) {
+					instance.loading.set(false);
+					return handleError(err);
+				}
+				instance.owner.set(username);
+				instance.loading.set(false);
+			});
+		} else {
+			Meteor.call('getLinkedServiceAccounts', function(err, serviceAccounts) {
+				if (err) {
+					this.loading.set(false);
+					return handleError(err);
+				}
+				instance.users.set(serviceAccounts);
+				instance.loading.set(false);
+			});
+		}
 	});
 });

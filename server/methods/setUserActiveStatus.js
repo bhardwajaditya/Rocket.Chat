@@ -4,7 +4,7 @@ import { Accounts } from 'meteor/accounts-base';
 
 import * as Mailer from '../../app/mailer';
 import { hasPermission } from '../../app/authorization';
-import { Users, Subscriptions } from '../../app/models';
+import { Users, Subscriptions, ServiceAccountOwners } from '../../app/models';
 import { settings } from '../../app/settings';
 
 Meteor.methods({
@@ -31,6 +31,7 @@ Meteor.methods({
 		}
 
 		Users.setUserActive(userId, active);
+		ServiceAccountOwners.setActive(userId, active);
 
 		if (user.username) {
 			Subscriptions.setArchivedByUsername(user.username, !active);

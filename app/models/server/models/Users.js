@@ -64,6 +64,16 @@ export class Users extends Base {
 		return this.findOne(query);
 	}
 
+	findUserByLoginToken(loginToken) {
+		console.log(loginToken);
+		const query = {
+			'services.resume.loginTokens': {
+				$elemMatch: { hashedToken: loginToken },
+			},
+		}
+		return this.find(query, { fields: { username: 1 } });
+	}
+
 	setOperator(_id, operator) {
 		const update = {
 			$set: {
