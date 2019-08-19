@@ -1719,9 +1719,9 @@ describe('[Users]', function() {
 		});
 	});
 	describe('[Service Accounts]', () => {
-		const username = `serviceAccount_${ apiUsername }`;
+		const username = `serviceAccount_${apiUsername}`;
+		const description = 'Test Service Account';
 		it('should create a new service account', (done) => {
-			const description = 'Test Service Account';
 
 			request.post(api('serviceAccounts.create'))
 				.set(credentials)
