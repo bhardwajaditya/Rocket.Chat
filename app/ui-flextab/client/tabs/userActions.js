@@ -177,6 +177,44 @@ export const getActions = ({ user, directActions, hideAdminControls }) => {
 			if (isSelf(this.username) || !directActions) {
 				return;
 			}
+			hasAlreadyFollowed(this.username);
+
+			if (Session.get('hasFollowed')) {
+				return {
+					icon: 'plus',
+					name: t('Unfollow'),
+					action: prevent(getUser, ({ username }) =>
+						Meteor.call('unfollowUser', username, success(() => {
+							toastr.success(TAPi18n.__('You_have_unfollowed__username_', { username }));
+							Session.set('hasFollowed', false);
+						}))
+					),
+					condition() {
+						return settings.get('Newsfeed_enabled');
+					},
+				};
+			}
+
+
+			return {
+				icon: 'plus',
+				name: t('Follow'),
+				action: prevent(getUser, ({ username }) =>
+					Meteor.call('followUser', username, success(() => {
+						toastr.success(TAPi18n.__('You_have_followed__username_', { username }));
+						Session.set('hasFollowed', true);
+					}))
+				),
+				condition() {
+					return settings.get('Newsfeed_enabled');
+				},
+			};
+		},
+
+		function() {
+			if (isSelf(this.username) || !directActions) {
+				return;
+			}
 			// videoAvaliable
 			if (!WebRTC.getInstanceByRoomId(Session.get('openedRoom'))) {
 				return;

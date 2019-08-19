@@ -283,9 +283,21 @@ export class Messages extends Base {
 				{ $or: listOfAccessibleRoomsObject },
 			],
 		};
+
+
 		if (Match.test(types, [String]) && (types.length > 0)) {
 			query.t =			{ $nin: types };
 		}
+		const msgIndex = this.summarization(query);
+		query = {
+			$or: msgIndex,
+
+		};
+
+		if (Match.test(types, [String]) && (types.length > 0)) {
+			query.t =			{ $nin: types };
+		}
+
 		return this.find(query, options);
 	}
 
@@ -445,6 +457,19 @@ export class Messages extends Base {
 			query.t =			{ $nin: types };
 		}
 
+		const msgIndex = this.summarization(query);
+
+		query = {
+			$or: msgIndex,
+
+		};
+
+
+		if (Match.test(types, [String]) && (types.length > 0)) {
+			query.t =			{ $nin: types };
+		}
+
+
 		return this.find(query, options);
 	}
 
@@ -495,6 +520,11 @@ export class Messages extends Base {
 
 		const listOfAccessibleRoomsObject = listOfAccessibleRooms.map((rid) => ({ rid }));
 
+
+		if (!following || !following.length || !listOfAccessibleRoomsObject || !listOfAccessibleRoomsObject.length) {
+			return {};
+		}
+
 		query = {
 			_hidden: {
 				$ne: true,
@@ -511,7 +541,46 @@ export class Messages extends Base {
 		if (Match.test(types, [String]) && (types.length > 0)) {
 			query.t =			{ $nin: types };
 		}
+
+		const msgIndex = this.summarization(query);
+
+		if (!msgIndex || !msgIndex.length) {
+			return {};
+		}
+
+		query = {
+			$or: msgIndex,
+
+		};
+		if (Match.test(types, [String]) && (types.length > 0)) {
+			query.t =			{ $nin: types };
+		}
 		return this.find(query, options);
+	}
+
+	summarization(query) {
+		const msg = this.find(query, { sort: { rid: 1, 'u._id': 1, ts: -1 }, fields: { _id: 1, 'u._id': 1, ts: 1, rid: 1 } }).fetch();
+		const msgIndex = [];
+		for (let i = 0; i < msg.length - 1; i++) {
+			if (msg[i].rid === msg[i + 1].rid) {
+				if (msg[i]['u._id'] === msg[i + 1]['u._id']) {
+					if ((msg[i].ts - msg[i + 1].ts) > 20e3) {
+						const temp = new Object();
+						temp._id = msg[i]._id;
+						msgIndex.push(temp);
+					}
+				} else {
+					const temp = new Object();
+					temp._id = msg[i]._id;
+					msgIndex.push(temp);
+				}
+			} else {
+				const temp = new Object();
+				temp._id = msg[i]._id;
+				msgIndex.push(temp);
+			}
+		}
+		return msgIndex;
 	}
 
 	findVisibleCreatedOrEditedAfterTimestamp(timestamp, options) {
