@@ -1749,7 +1749,7 @@ describe('[Users]', function() {
 				.end(done);
 		});
 		it('should return an error when trying register new service account with an existing username', (done) => {
-			request.post(api('users.register'))
+			request.post(api('serviceAccounts.create'))
 				.send({
 					name: username,
 					username,
@@ -1761,6 +1761,31 @@ describe('[Users]', function() {
 				.expect((res) => {
 					expect(res.body).to.have.property('success', false);
 					expect(res.body).to.have.property('error').and.to.be.equal('Username is already in use');
+				})
+				.end(done);
+		});
+		it('should retrieve the linked service accounts successfully', (done) => {
+			request.get(api('serviceAccounts.getLinkedAccounts'))
+				.set(credentials)
+				.expect('Content-Type', 'application/json')
+				.expect(200)
+				.expect((res) => {
+					expect(res.body).to.have.property('success', true);
+					expect(res.body).to.have.property('users').and.to.be.an('array');
+				})
+				.end(done);
+		});
+		it('should retrieve the login token for linked service account', (done) => {
+			request.get(api('serviceAccounts.getToken'))
+				.set(credentials)
+				.query({
+					username,
+				})
+				.expect('Content-Type', 'application/json')
+				.expect(200)
+				.expect((res) => {
+					expect(res.body).to.have.property('success', true);
+					expect(res.body).to.not.have.nested.property('token.token');
 				})
 				.end(done);
 		});
