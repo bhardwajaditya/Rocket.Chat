@@ -1,13 +1,13 @@
 import { Meteor } from 'meteor/meteor';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { Template } from 'meteor/templating';
-import { Session } from 'meteor/session';
 import { FlowRouter } from 'meteor/kadira:flow-router';
+import { Session } from 'meteor/session';
 
-import { handleError } from '../../../utils';
+import { handleError, t } from '../../../utils';
 import { callbacks } from '../../../callbacks';
 import './serviceAccountSidebarLogin.html';
-import { popover } from '../../../ui-utils/client';
+import { popover, modal } from '../../../ui-utils';
 
 Template.serviceAccountSidebarLogin.helpers({
 	loading() {
@@ -61,6 +61,23 @@ Template.serviceAccountSidebarLogin.events({
 					}
 				});
 			});
+		});
+	},
+	'click .js-add'(e) {
+		e.preventDefault();
+		popover.close();
+		modal.open({
+			title: t('Service_account_title'),
+			content: 'createServiceAccount',
+			data: {
+				onCreate() {
+					modal.close();
+				},
+			},
+			modifier: 'modal',
+			showConfirmButton: false,
+			showCancelButton: false,
+			confirmOnEnter: false,
 		});
 	},
 });
