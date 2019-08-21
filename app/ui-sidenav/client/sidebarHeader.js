@@ -76,7 +76,7 @@ const toolbarButtons = (user) => [{
 	name: t('Service_account_login'),
 	icon: 'reload',
 	active: Session.get('saNotification'),
-	condition: () => settings.get('Service_account_enabled') && (!Meteor.user().u || (Meteor.user().u && localStorage.getItem('serviceAccountForceLogin'))),
+	condition: () => settings.get('Service_account_enabled') && ((Meteor.user() && !Meteor.user().u) || (Meteor.user() && Meteor.user().u && localStorage.getItem('serviceAccountForceLogin'))),
 	action: (e) => {
 		const options = [];
 		const config = {
