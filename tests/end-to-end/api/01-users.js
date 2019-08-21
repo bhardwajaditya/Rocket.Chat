@@ -1749,6 +1749,7 @@ describe('[Users]', function() {
 		});
 		it('should return an error when trying register new service account with an existing username', (done) => {
 			request.post(api('serviceAccounts.create'))
+				.set(credentials)
 				.send({
 					name: username,
 					username,
