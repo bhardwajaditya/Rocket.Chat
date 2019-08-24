@@ -40,4 +40,7 @@ Template.accountFlex.helpers({
 	embeddedVersion() {
 		return Layout.isEmbedded();
 	},
+	serviceAccountTransferEnabled() {
+		return settings.get('Service_Accounts_TransferEnabled');
+	},
 });
