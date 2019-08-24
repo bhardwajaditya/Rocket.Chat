@@ -1760,7 +1760,7 @@ describe('[Users]', function() {
 				.expect(400)
 				.expect((res) => {
 					expect(res.body).to.have.property('success', false);
-					expect(res.body).to.have.property('error').and.to.be.equal('Username is already in use');
+					expect(res.body).to.have.property('error');
 				})
 				.end(done);
 		});
