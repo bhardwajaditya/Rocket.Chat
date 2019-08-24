@@ -1771,7 +1771,7 @@ describe('[Users]', function() {
 				.expect(200)
 				.expect((res) => {
 					expect(res.body).to.have.property('success', true);
-					expect(res.body).to.have.property('users').and.to.be.an('array');
+					expect(res.body).to.have.property('serviceAccounts').and.to.be.an('array');
 				})
 				.end(done);
 		});
