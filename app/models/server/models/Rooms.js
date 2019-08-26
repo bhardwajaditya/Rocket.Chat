@@ -938,6 +938,18 @@ export class Rooms extends Base {
 		return this.update(query, update);
 	}
 
+	setLastBroadcastTimeById(_id) {
+		const query = { _id };
+
+		const update = {
+			$set: {
+				lastBroadcast: new Date(),
+			},
+		};
+
+		return this.update(query, update);
+	}
+
 	// INSERT
 	createWithTypeNameUserAndUsernames(type, name, fname, user, usernames, extraData) {
 		const room = {
