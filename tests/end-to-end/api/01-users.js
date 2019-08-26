@@ -1785,7 +1785,7 @@ describe('[Users]', function() {
 				.expect(200)
 				.expect((res) => {
 					expect(res.body).to.have.property('success', true);
-					expect(res.body).to.not.have.nested.property('token.token');
+					expect(res.body).to.have.nested.property('token.token');
 				})
 				.end(done);
 		});
