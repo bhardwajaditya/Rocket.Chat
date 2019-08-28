@@ -1760,7 +1760,7 @@ describe('[Users]', function() {
 				.expect(400)
 				.expect((res) => {
 					expect(res.body).to.have.property('success', false);
-					expect(res.body).to.have.property('error').and.to.be.equal('Username is already in use');
+					expect(res.body).to.have.property('error');
 				})
 				.end(done);
 		});
@@ -1771,7 +1771,7 @@ describe('[Users]', function() {
 				.expect(200)
 				.expect((res) => {
 					expect(res.body).to.have.property('success', true);
-					expect(res.body).to.have.property('users').and.to.be.an('array');
+					expect(res.body).to.have.property('serviceAccounts').and.to.be.an('array');
 				})
 				.end(done);
 		});
@@ -1785,7 +1785,7 @@ describe('[Users]', function() {
 				.expect(200)
 				.expect((res) => {
 					expect(res.body).to.have.property('success', true);
-					expect(res.body).to.not.have.nested.property('token.token');
+					expect(res.body).to.have.nested.property('token.token');
 				})
 				.end(done);
 		});
