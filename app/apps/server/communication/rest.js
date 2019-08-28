@@ -227,11 +227,7 @@ export class AppsRestApi {
 					return API.v1.failure({ error: 'Failed to get a file to install for the App. ' });
 				}
 
-<<<<<<< HEAD
-				const aff = Promise.await(manager.add(buff.toString('base64'), false, marketplaceInfo));
-=======
 				const aff = Promise.await(manager.add(buff.toString('base64'), true, marketplaceInfo));
->>>>>>> e3af784d739b9c79140c7cf5bd17487b466277b2
 				const info = aff.getAppInfo();
 
 				if (aff.hasStorageError()) {
