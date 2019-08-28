@@ -6,11 +6,11 @@ import './api/rest';
 import './methods/usernameExists';
 import './methods/addServiceAccount';
 import './methods/getLoginToken';
-import './methods/getLinkedServiceAccounts';
 
 import './hooks/serviceAccountCallback';
 import './hooks/serviceAccountBroadcast';
 
 import './publications/fullServiceAccountData';
+import './publications/userServiceAccounts';
 
 import '../lib/serviceAccountRoomType';

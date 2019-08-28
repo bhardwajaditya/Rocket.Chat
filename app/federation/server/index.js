@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { Meteor } from 'meteor/meteor';
 import { _ } from 'meteor/underscore';
 
@@ -147,3 +148,6 @@ settings.get('FEDERATION_Enabled', enableOrDisable);
 settings.get('FEDERATION_Domain', updateSettings);
 settings.get('FEDERATION_Discovery_Method', updateSettings);
 settings.get('FEDERATION_Hub_URL', updateSettings);
+=======
+export { Federation } from './federation';
+>>>>>>> e3af784d739b9c79140c7cf5bd17487b466277b2

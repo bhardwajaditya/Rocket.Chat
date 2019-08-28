@@ -176,7 +176,7 @@ export const RoomHistoryManager = new class {
 			}
 
 			room.isLoading.set(false);
-			readMessage.refreshUnreadMark(rid, true);
+			readMessage.refreshUnreadMark(rid);
 			return RoomManager.updateMentionsMarksOfRoom(typeName);
 		});
 	}
@@ -280,9 +280,10 @@ export const RoomHistoryManager = new class {
 				}
 			}
 
-			Meteor.defer(function() {
-				readMessage.refreshUnreadMark(message.rid, true);
-				RoomManager.updateMentionsMarksOfRoom(typeName);
+			readMessage.refreshUnreadMark(message.rid);
+			RoomManager.updateMentionsMarksOfRoom(typeName);
+
+			Tracker.afterFlush(() => {
 				const wrapper = $('.messages-box .wrapper');
 				const msgElement = $(`#${ message._id }`, wrapper);
 				const pos = (wrapper.scrollTop() + msgElement.offset().top) - (wrapper.height() / 2);
@@ -291,16 +292,12 @@ export const RoomHistoryManager = new class {
 				}, 500);
 
 				msgElement.addClass('highlight');
-
-				setTimeout(function() {
-					room.isLoading.set(false);
-					const messages = wrapper[0];
-					instance.atBottom = !result.moreAfter && (messages.scrollTop >= (messages.scrollHeight - messages.clientHeight));
-					return 500;
-				});
-
-				return setTimeout(() => msgElement.removeClass('highlight'), 500);
+				room.isLoading.set(false);
+				const messages = wrapper[0];
+				instance.atBottom = !result.moreAfter && (messages.scrollTop >= (messages.scrollHeight - messages.clientHeight));
+				setTimeout(() => msgElement.removeClass('highlight'), 500);
 			});
+
 			if (!room.loaded) {
 				room.loaded = 0;
 			}

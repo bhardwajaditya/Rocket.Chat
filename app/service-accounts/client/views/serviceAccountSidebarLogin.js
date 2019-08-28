@@ -2,34 +2,29 @@ import { Meteor } from 'meteor/meteor';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/kadira:flow-router';
-import { Session } from 'meteor/session';
 
-import { handleError, t } from '../../../utils';
+import { handleError } from '../../../utils';
 import { callbacks } from '../../../callbacks';
+import FullUser from '../../../models/client/models/FullUser';
 import './serviceAccountSidebarLogin.html';
-import { popover, modal } from '../../../ui-utils';
+import { popover } from '../../../ui-utils/client';
 
 Template.serviceAccountSidebarLogin.helpers({
-	loading() {
-		return Template.instance().loading.get();
+	isReady() {
+		const instance = Template.instance();
+		return instance.ready && instance.ready.get();
 	},
 	users() {
-		return Template.instance().users.get();
+		return Template.instance().users();
 	},
 	hasServiceAccounts() {
-		return Template.instance().users.get() && Template.instance().users.get().length > 0;
+		return Template.instance().users() && Template.instance().users().length > 0;
 	},
 	owner() {
 		return Meteor.user() && Meteor.user().u;
 	},
 	showOwnerAccountLink() {
 		return localStorage.getItem('serviceAccountForceLogin') && Meteor.user() && !!Meteor.user().u;
-	},
-	receivedNewMessage(username) {
-		if (Template.instance().notifiedServiceAccount) {
-			return username === Template.instance().notifiedServiceAccount.get();
-		}
-		return false;
 	},
 });
 
@@ -63,43 +58,21 @@ Template.serviceAccountSidebarLogin.events({
 			});
 		});
 	},
-	'click .js-add'(e) {
-		e.preventDefault();
-		popover.close();
-		modal.open({
-			title: t('Service_account_title'),
-			content: 'createServiceAccount',
-			data: {
-				onCreate() {
-					modal.close();
-				},
-			},
-			modifier: 'modal',
-			showConfirmButton: false,
-			showCancelButton: false,
-			confirmOnEnter: false,
-		});
-	},
 });
 
 Template.serviceAccountSidebarLogin.onCreated(function() {
 	const instance = this;
 	this.ready = new ReactiveVar(true);
-	this.users = new ReactiveVar([]);
-	this.loading = new ReactiveVar(true);
-	this.notifiedServiceAccount = new ReactiveVar('');
-	instance.notifiedServiceAccount.set(Session.get('saMessageReceiver'));
-	Session.delete('saMessageReceiver');
-	Session.delete('saNotification');
 	this.autorun(() => {
-		instance.loading.set(true);
-		Meteor.call('getLinkedServiceAccounts', function(err, serviceAccounts) {
-			if (err) {
-				this.loading.set(false);
-				return handleError(err);
-			}
-			instance.users.set(serviceAccounts);
-			instance.loading.set(false);
-		});
+		const subscription = instance.subscribe('userServiceAccounts');
+		instance.ready.set(subscription.ready());
 	});
+	this.users = function() {
+		const query = {
+			'u._id': Meteor.userId(),
+			active: true,
+		};
+		const limit = instance.limit && instance.limit.get();
+		return FullUser.find(query, { limit, sort: { username: 1, name: 1 } }).fetch();
+	};
 });
