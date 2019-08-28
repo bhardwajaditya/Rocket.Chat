@@ -6,7 +6,6 @@ import { FederationKeys } from '../../models/server';
 Meteor.startup(function() {
 	const federationPublicKey = FederationKeys.getPublicKeyString();
 
-	const defaultHubURL = process.env.NODE_ENV === 'development' ? 'http://localhost:8080' : 'https://hub.rocket.chat';
 
 	settings.addGroup('Federation', function() {
 		this.add('FEDERATION_Enabled', false, {
