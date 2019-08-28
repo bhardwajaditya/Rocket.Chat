@@ -1180,6 +1180,20 @@ export class Users extends Base {
 		return this.update(query, update, { multi: true });
 	}
 
+	setOwnerByServiceAccountUsername(serviceAccount, newOwner) {
+		const query = {
+			username: serviceAccount,
+		};
+
+		const update = {
+			$set: {
+				u: newOwner,
+			},
+		};
+
+		return this.update(query, update);
+	}
+
 	// INSERT
 	create(data) {
 		const user = {

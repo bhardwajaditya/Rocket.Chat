@@ -28,6 +28,12 @@ Meteor.startup(() => {
 			type: 'int',
 			public: true,
 		});
+		this.add('Service_Accounts_TransferEnabled', true, {
+			group: 'Service Accounts',
+			i18nLabel: 'Service_Accounts_TransferEnabled',
+			type: 'boolean',
+			public: true,
+		});
 	});
 	settings.add('Accounts_Default_User_Preferences_sidebarShowServiceAccounts', true, {
 		group: 'Accounts',
