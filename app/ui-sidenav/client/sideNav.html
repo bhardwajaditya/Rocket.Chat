@@ -1,6 +1,26 @@
 <template name="sideNav">
 	<aside class="sidebar sidebar--{{sidebarViewMode}} {{#if sidebarHideAvatar}}sidebar--hide-avatar{{/if}}" role="navigation">
 		{{> sidebarHeader }}
+		<li class="sidebar-item js-sidebar-type-">
+			<a class="sidebar-item__link js-contact" aria-label="Queue">
+				<div class="sidebar-item__body">
+					<div class="sidebar-item__message">
+						<div class="sidebar-item__message-top">
+							<div class="sidebar-item__name">	
+								<div class="sidebar-item__icon">
+									<svg class="rc-icon rc-icon--default-size sidebar-item__icon sidebar-item__icon--queue" aria-hidden="true">
+										<use xlink:href="#icon-user-plus"></use>
+									</svg>
+								</div>
+								<div class="sidebar-item__ellipsis">
+									Try Contact Sync (Only for Mobile Users)
+								</div>
+							</div>					
+						</div>
+					</div>
+				</div>
+			</a>
+		</li>
 		{{#if loggedInUser}}
 			<div class="unread-rooms background-primary-action-color color-primary-action-contrast top-unread-rooms hidden">
 				{{_ "More_unreads"}} <i class="icon-up-big"></i>

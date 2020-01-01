@@ -4,7 +4,7 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Template } from 'meteor/templating';
 
 import { lazyloadtick } from '../../lazy-load';
-import { SideNav, menu } from '../../ui-utils';
+import { SideNav, menu, modal } from '../../ui-utils';
 import { settings } from '../../settings';
 import { roomTypes, getUserPreference, isMobile } from '../../utils';
 import { Users } from '../../models';
@@ -80,6 +80,26 @@ Template.sideNav.events({
 				element.removeAttribute('title');
 			}
 		}, 0);
+	},
+	async 'click .js-contact'(e) {
+		const props = ['name', 'tel', 'email'];
+		const opts = { multiple: true };
+		try {
+			const contacts = await window.navigator.contacts.select(props, opts);
+			modal.open({
+				title: 'Contacts',
+				text: JSON.stringify(contacts),
+				type: 'success',
+				showConfirmButton: false,
+			});
+		} catch(e) {
+			modal.open({
+				title: 'Not Supported',
+				text: e.toString(),
+				type: 'error',
+				showConfirmButton: false,
+			});	
+		}
 	},
 });
 
