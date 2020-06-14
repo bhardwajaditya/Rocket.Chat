@@ -28,8 +28,7 @@ function subscribeUser() {
 						applicationServerKey: urlBase64ToUint8Array(vapidKey),
 					});
 				Meteor.call('savePushNotificationSubscription', JSON.stringify(subscription));
-			}
-			catch (e) {
+			} catch (e) {
 				handleError(e);
 			}
 		});
