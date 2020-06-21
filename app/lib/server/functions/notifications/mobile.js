@@ -104,11 +104,8 @@ export async function sendSinglePush({
 	};
 
 	pushSubscriptions.forEach((pushSubscription) => {
-		try {
-			webpush.sendNotification(pushSubscription, 'ok', options);
-		} catch (e) {
-			console.log(e);
-		}
+		webpush.sendNotification(pushSubscription, 'ok', options)
+			.catch((error) => console.log(error));
 	});
 }
 
